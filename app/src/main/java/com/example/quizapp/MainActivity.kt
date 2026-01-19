@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QuizAppTheme {
-                firstScreen()
+                quizNavigation()
             }
         }
     }

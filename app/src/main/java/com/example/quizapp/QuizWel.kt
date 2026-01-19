@@ -1,15 +1,10 @@
 package com.example.quizapp
 // need to readjust the window size when the keyboard is opens.
-import android.R.attr.name
-import android.R.attr.text
-import android.widget.Button
-import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,7 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,15 +27,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun firstScreen() {
+fun QuizWel(onStartClick: (String) -> Unit) {
     var name by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -96,21 +91,27 @@ fun firstScreen() {
                     value = name,
                     onValueChange = {name = it},
                     label = {Text("Name")},
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top =16.dp,bottom = 16.dp),
                     singleLine = true
                 )
                 Button(
                     onClick = {
                         if(name.isNotBlank()){
-                            println("Starting quiz for: $name")
+                            onStartClick(name)
+                        }
+                        else{
+                            Toast.makeText(
+                                context,
+                                "please enter your name",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4908FA)
                     ),
-                    shape = RoundedCornerShape(8.dp),
-                    enabled = name.isNotBlank()
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = "Start Quiz",
@@ -124,10 +125,4 @@ fun firstScreen() {
 
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun firstScreenPreview() {
-    firstScreen()
 }
