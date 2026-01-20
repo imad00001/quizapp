@@ -27,7 +27,8 @@ fun quizNavigation(){
         composable("questions/{userName}") { backStackEntry ->
             val userName = backStackEntry.arguments?.getString("userName") ?: ""
             QuestionsScreen(
-                userName = userName
+                userName = userName,
+                currentIndex = 2, totalQuestions = 10
             )
         }
 
