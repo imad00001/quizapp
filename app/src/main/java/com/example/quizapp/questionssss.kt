@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +31,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.quizapp.util.Questions
 
 @Composable
-fun QuestionsScreen(userName: String, currentIndex: Int, totalQuestions: Int) {
+fun QuestionsScreen(
+    questions: Questions,
+    currentIndex: Int,
+    totalQuestions: Int,
+    onCheckClick: (Int) -> Unit
+) {
+    var selectedOption by remember { mutableStateOf(-1) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +64,7 @@ fun QuestionsScreen(userName: String, currentIndex: Int, totalQuestions: Int) {
         )
         Spacer(modifier = Modifier.padding(24.dp))
         Image(
-            painter = painterResource(id = R.drawable.it),
+            painter = painterResource(id = questions.image),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,7 +73,7 @@ fun QuestionsScreen(userName: String, currentIndex: Int, totalQuestions: Int) {
         )
         Spacer(modifier = Modifier.padding(14.dp))
         LinearProgressIndicator(
-            progress = { (currentIndex + 1) / totalQuestions.toFloat() },
+            progress = { (currentIndex + 1).toFloat() / totalQuestions },
             modifier = Modifier.fillMaxWidth(),
             color = Color(0xFF00C4B4)
         )
@@ -81,37 +88,65 @@ fun QuestionsScreen(userName: String, currentIndex: Int, totalQuestions: Int) {
             color = Color.White,
             fontWeight = FontWeight.Medium
         )
-//        questions.options.forEachIndexed { index,option ->
-//            OptionItem(
-//                text = option,
-//                selected = selectedOption == index,
-//                onClick = {
-//                    selectedOption = index
-//                }
-//            )
-//        }
-//        Button(
-//            onClick = { onCheckClick(selectedOption) },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(50.dp),
-//            enabled = selectedOption != -1,
-//            colors = ButtonDefaults.buttonColors(
-//                containerColor = Color(0xFF6A1B9A)
-//            )
-//        ) {
-//            Text("CHECK", fontSize = 16.sp)
-//        }
+        questions.options.forEachIndexed { index, option ->
+            OptionItem(
+                text = option,
+                selected = selectedOption == index,
+                onClick = {
+                    selectedOption = index
+                }
+            )
+        }
+        Button(
+            onClick = {
+                onCheckClick(selectedOption)
+                selectedOption = -1
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            enabled = selectedOption != -1,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF6A1B9A)
+            )
+        ) {
+            Text("CHECK", fontSize = 16.sp)
+        }
 
     }
 
 }
 
-
-@Preview(showBackground = true)
 @Composable
-fun QuestionsScreenPreview() {
-    QuestionsScreen(userName = "Test User", currentIndex = 2, totalQuestions = 10)
-}
+    fun OptionItem(
+        text: String,
+        selected: Boolean,
+        onClick: () -> Unit
+    ) {
+        val backgroundColor =
+            if (selected) Color(0xFF6A1B9A) else Color.White
+
+        val textColor =
+            if (selected) Color.White else Color.Black
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
+                .background(backgroundColor, RoundedCornerShape(12.dp))
+                .clickable { onClick() }
+                .padding(16.dp)
+        ) {
+            Text(
+                text = text,
+                color = textColor,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+
+
+
 
 
