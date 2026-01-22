@@ -12,6 +12,7 @@ import com.example.quizapp.util.*
 fun quizNavigation() {
 
     val navController = rememberNavController()
+    var score by remember { mutableStateOf(0) }
 
     val questionsList = remember { Constants.getQuestions() }
     var currentIndex by remember { mutableStateOf(0) }
@@ -40,12 +41,29 @@ fun quizNavigation() {
                         questionsList[currentIndex].correctAnswer
                     ) {
                         // correct answer logic (score++)
+                        score++
                     }
 
                     if (currentIndex < questionsList.lastIndex) {
                         currentIndex++
                     } else {
                         // quiz finished → navigate to result screen later
+                        navController.navigate("result/${it.arguments?.getString("userName")}/$score")
+                    }
+                }
+            )
+        }
+        composable("result/{userName}/{score}") {
+            ResultScreen(
+                userName = it.arguments?.getString("userName") ?: "User",
+                score = it.arguments?.getString("score")?.toInt() ?: 0,
+                totalQuestions = questionsList.size,
+                onRestartClick = {
+                    // reset quiz state
+                    score = 0
+                    currentIndex = 0
+                    navController.navigate("Welcome") {
+                        popUpTo("Welcome") { inclusive = true }
                     }
                 }
             )
