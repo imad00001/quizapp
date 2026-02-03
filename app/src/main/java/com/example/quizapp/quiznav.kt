@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quizapp.util.*
 
-
 @Composable
 fun quizNavigation() {
 
@@ -41,6 +40,7 @@ fun quizNavigation() {
                         questionsList[currentIndex].correctAnswer
                     ) {
                         // correct answer logic (score++)
+                        //////
                         score++
                     }
 

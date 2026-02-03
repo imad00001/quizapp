@@ -56,7 +56,7 @@ fun QuizWel(onStartClick: (String) -> Unit) {
         Text(
             text = "Quiz App",
             modifier = Modifier.wrapContentSize().padding(bottom = 8.dp),
-            fontSize = 24.sp,
+            fontSize = 32.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
 
@@ -78,7 +78,7 @@ fun QuizWel(onStartClick: (String) -> Unit) {
                     "Welcome",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = Color.White,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(

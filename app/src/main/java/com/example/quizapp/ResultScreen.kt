@@ -52,6 +52,15 @@ fun ResultScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.trophy),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            contentScale = ContentScale.Fit
+        )
+        Spacer(modifier = Modifier.padding(14.dp))
         Text(
             text = "Congratulations, $userName!",
             fontSize = 24.sp,

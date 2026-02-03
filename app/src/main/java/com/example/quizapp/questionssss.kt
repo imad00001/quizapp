@@ -24,20 +24,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quizapp.util.Questions
+import kotlinx.coroutines.delay
 
 @Composable
 fun QuestionsScreen(
     questions: Questions,
     currentIndex: Int,
     totalQuestions: Int,
-    onCheckClick: (Int) -> Unit
+    onCheckClick: (Int) -> Unit,
+    viewModel: MyViewModel = viewModel ()
+
 ) {
-    var selectedOption by remember { mutableStateOf(-1) }
+    val timeLeft by viewModel.timeLeft
+    val selectedOption by viewModel.selectedOption
+
+    LaunchedEffect(currentIndex) {
+       viewModel.startTimer {
+           onCheckClick(-1)
+           viewModel.resetSelection()
+       }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,6 +85,7 @@ fun QuestionsScreen(
             contentScale = ContentScale.Fit
         )
         Spacer(modifier = Modifier.padding(14.dp))
+
         LinearProgressIndicator(
             progress = { (currentIndex + 1).toFloat() / totalQuestions },
             modifier = Modifier.fillMaxWidth(),
@@ -88,63 +102,74 @@ fun QuestionsScreen(
             color = Color.White,
             fontWeight = FontWeight.Medium
         )
+
+        Text(
+            text ="Time LEft: $timeLeft s",
+            color = if(timeLeft <= 3)Color.Red else Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+
         questions.options.forEachIndexed { index, option ->
             OptionItem(
                 text = option,
                 selected = selectedOption == index,
                 onClick = {
-                    selectedOption = index
+                   viewModel.selectOption(index)
                 }
             )
         }
         Button(
             onClick = {
+                viewModel.stopTimer()
                 onCheckClick(selectedOption)
-                selectedOption = -1
+                viewModel.resetSelection()
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
             enabled = selectedOption != -1,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF6A1B9A)
+                containerColor = Color(0xFF029113)
             )
         ) {
             Text("CHECK", fontSize = 16.sp)
         }
 
-    }
-
-}
-
-@Composable
-    fun OptionItem(
-        text: String,
-        selected: Boolean,
-        onClick: () -> Unit
-    ) {
-        val backgroundColor =
-            if (selected) Color(0xFF6A1B9A) else Color.White
-
-        val textColor =
-            if (selected) Color.White else Color.Black
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 6.dp)
-                .background(backgroundColor, RoundedCornerShape(12.dp))
-                .clickable { onClick() }
-                .padding(16.dp)
-        ) {
-            Text(
-                text = text,
-                color = textColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
         }
     }
+
+@Composable
+fun OptionItem(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor =
+        if (selected) Color(0xFF029113) else Color.White
+
+    val textColor =
+        if (selected) Color.White else Color.Black
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .background(backgroundColor, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+
 
 
 
