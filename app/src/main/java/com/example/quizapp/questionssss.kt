@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.quizapp.util.Questions
 import kotlinx.coroutines.delay
 
@@ -38,7 +39,7 @@ fun QuestionsScreen(
     currentIndex: Int,
     totalQuestions: Int,
     onCheckClick: (Int) -> Unit,
-    viewModel: MyViewModel = viewModel ()
+    viewModel: QuizViewModel = viewModel ()
 
 ) {
     val timeLeft by viewModel.timeLeft
@@ -76,8 +77,16 @@ fun QuestionsScreen(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.padding(24.dp))
-        Image(
-            painter = painterResource(id = questions.image),
+//        Image(
+//            painter = painterResource(id = questions.image),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(180.dp),
+//            contentScale = ContentScale.Fit
+//        )
+        AsyncImage( // for cloud images
+            model = questions.image,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,8 +113,8 @@ fun QuestionsScreen(
         )
 
         Text(
-            text ="Time LEft: $timeLeft s",
-            color = if(timeLeft <= 3)Color.Red else Color.White,
+            text ="Time Left: ${viewModel.timeLeft.value}s",
+            color = if(viewModel.timeLeft.value <= 3)Color.Red else Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
         )
@@ -114,13 +123,13 @@ fun QuestionsScreen(
         questions.options.forEachIndexed { index, option ->
             OptionItem(
                 text = option,
-                selected = selectedOption == index,
+                selected = viewModel.selectedOption.value == index,
                 onClick = {
                    viewModel.selectOption(index)
                 }
             )
         }
-        Button(
+        Button(// maybe theres a error
             onClick = {
                 viewModel.stopTimer()
                 onCheckClick(selectedOption)

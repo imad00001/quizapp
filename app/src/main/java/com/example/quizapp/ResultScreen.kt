@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.quizapp.util.Questions
 
 @Composable
@@ -52,8 +53,16 @@ fun ResultScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.trophy),
+//        Image(
+//            painter = painterResource(id = R.drawable.trophy),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(180.dp),
+//            contentScale = ContentScale.Fit
+//        )
+        AsyncImage( // for cloud images
+            model = "https://quizv2-data.s3.ap-south-1.amazonaws.com/trophy.png",
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
