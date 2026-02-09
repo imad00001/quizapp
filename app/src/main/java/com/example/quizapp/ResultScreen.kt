@@ -24,12 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.quizapp.util.Questions
+
 
 @Composable
 fun ResultScreen(
@@ -96,6 +98,45 @@ fun ResultScreen(
                 fontSize = 18.sp,
                 color = Color(0xFF4908FA)
             )
+        }
+    }
+}
+@Composable
+fun QuizFlow(userName: String) {
+    val quizViewModel: QuizViewModel = viewModel()
+
+    when {
+        quizViewModel.isQuizFinished -> {
+            ResultScreen(
+                userName = userName,
+                score = quizViewModel.score,
+                totalQuestions = quizViewModel.questions.size,
+                onRestartClick = {
+                    quizViewModel.restartQuiz()
+                }
+            )
+        }
+
+        quizViewModel.questions.isNotEmpty() -> {
+            QuestionsScreen(
+                questions = quizViewModel.questions[quizViewModel.currentIndex],
+                currentIndex = quizViewModel.currentIndex,
+                totalQuestions = quizViewModel.questions.size,
+                onCheckClick = {
+                    quizViewModel.onCheckAnswer()
+                },
+                viewModel = quizViewModel
+            )
+        }
+
+        else -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }

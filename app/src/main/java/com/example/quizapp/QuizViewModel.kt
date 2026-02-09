@@ -13,7 +13,10 @@ class QuizViewModel : ViewModel() {
 
     private val QUESTION_TIME = 10
 
-    // ---------- QUIZ STATE ----------
+    // ---------- QUIZ STATE ----------\
+    var isQuizFinished by mutableStateOf(false)
+        private set
+
     var questions by mutableStateOf<List<Questions>>(emptyList())
         private set
 
@@ -100,14 +103,15 @@ class QuizViewModel : ViewModel() {
         } else {
             // quiz finished (navigate to result later)
             stopTimer()
+            isQuizFinished = true
         }
     }
-//    fun restartQuiz() {
-//        currentIndex = 0
-//        score = 0
-//        selectedOption.value = -1
-//        isQuizFinished = false
-//        startTimer { onTimeOut() }
-//    }
+    fun restartQuiz() {
+        currentIndex = 0
+        score = 0
+        selectedOption.value = -1
+        isQuizFinished = false
+        startTimer { onTimeOut() }
+    }
 
 }
